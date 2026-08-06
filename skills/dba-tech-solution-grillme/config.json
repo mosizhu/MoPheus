@@ -1,0 +1,227 @@
+{
+  "version": "1.0.0",
+  "scenarios": {
+    "oracle-to-dm": {
+      "id": "oracle-to-dm",
+      "name": "Oracle → 达梦 迁移",
+      "keywords": ["oracle", "达梦", "迁移", "国产", "替代"],
+      "questions": [
+        {
+          "id": "scope",
+          "category": "迁移范围",
+          "text": "请确认迁移范围：是全量数据库迁移，还是仅迁移特定业务模块/表？",
+          "options": ["全量迁移", "按业务模块迁移", "按表迁移", "尚未确定"],
+          "required": true
+        },
+        {
+          "id": "data_size",
+          "category": "数据规模",
+          "text": "请提供源库数据量估算：总数据大小（GB/TB）及核心业务表行数大概是多少？",
+          "options": ["< 100GB", "100GB - 1TB", "1TB - 10TB", "> 10TB", "不清楚"],
+          "required": true
+        },
+        {
+          "id": "downtime",
+          "category": "停机窗口",
+          "text": "业务允许的最大停机时间窗口是多少？这将决定迁移方案选型（离线/在线）。",
+          "options": ["< 1 小时", "1 - 4 小时", "4 - 24 小时", "> 24 小时", "可接受长时间停机"],
+          "required": true
+        },
+        {
+          "id": "version",
+          "category": "版本信息",
+          "text": "源端 Oracle 版本和目标端达梦数据库版本分别是什么？",
+          "options": ["Oracle 11g → 达梦 7", "Oracle 12c → 达梦 7", "Oracle 19c+ → 达梦 8", "其他组合"],
+          "required": true
+        },
+        {
+          "id": "special_objects",
+          "category": "特殊对象",
+          "text": "源库中是否存在以下特殊对象？（可多选）",
+          "options": ["存储过程/函数/包", "触发器", "LOB/CLOB/BLOB 大字段", "JSON 类型数据", "物化视图", "同义词/序列", "以上都没有"],
+          "required": true
+        },
+        {
+          "id": "ha_requirement",
+          "category": "高可用",
+          "text": "目标端是否需要高可用架构？",
+          "options": ["单实例即可", "主备/读写分离", "集群（MPEC）", "需要 RAC 级别的高可用"],
+          "required": false
+        },
+        {
+          "id": "app_modification",
+          "category": "应用改造",
+          "text": "应用层是否需要适配改造？（如 SQL 方言差异、驱动替换等）",
+          "options": ["需要全面改造", "仅需替换驱动", "已有适配层，改造量小", "尚未评估"],
+          "required": true
+        },
+        {
+          "id": "data_validation",
+          "category": "数据校验",
+          "text": "迁移完成后的数据校验方案是什么？",
+          "options": ["全量数据比对", "抽样校验关键字段", "业务功能验证为主", "尚未规划"],
+          "required": true
+        },
+        {
+          "id": "rollback",
+          "category": "回滚方案",
+          "text": "请确认回滚策略：如果迁移失败，如何快速回退到 Oracle？",
+          "options": ["双写过渡 + 快速切换", "保留 Oracle 环境 + 反向同步", "直接回滚（风险较高）", "尚未制定回滚方案"],
+          "required": true
+        },
+        {
+          "id": "performance_requirement",
+          "category": "性能要求",
+          "text": "迁移后性能需要达到什么水平？与 Oracle 相比是否允许一定程度的下降？",
+          "options": ["性能不得下降", "允许 10% 以内下降", "允许 30% 以内下降", "无明确要求"],
+          "required": false
+        }
+      ],
+      "solution_templates": {
+        "title": "Oracle → 达梦 迁移技术方案",
+        "sections": [
+          {
+            "name": "一、迁移概述",
+            "template": "本次迁移目标为将 Oracle 数据库迁移至达梦数据库。\n\n根据需求分析：\n- 迁移范围：{scope}\n- 数据规模：{data_size}\n- 停机窗口：{downtime}\n- 源版本 → 目标版本：{version}\n- 应用改造：{app_modification}"
+          },
+          {
+            "name": "二、迁移方案选型",
+            "template": "基于需求分析，推荐以下迁移方案：\n\n{methodology_recommendation}\n\n详细步骤：\n{detailed_steps}"
+          },
+          {
+            "name": "三、特殊对象处理",
+            "template": "{special_objects_handling}"
+          },
+          {
+            "name": "四、应用改造方案",
+            "template": "{app_modification_plan}"
+          },
+          {
+            "name": "五、数据校验方案",
+            "template": "{validation_plan}"
+          },
+          {
+            "name": "六、回滚预案",
+            "template": "{rollback_plan}"
+          },
+          {
+            "name": "七、风险评估",
+            "template": "主要风险点：\n{risk_assessment}"
+          }
+        ]
+      }
+    },
+    "generic-migration": {
+      "id": "generic-migration",
+      "name": "通用数据库迁移",
+      "keywords": ["迁移", "数据库搬迁", "数据同步"],
+      "questions": [
+        {
+          "id": "source_db",
+          "category": "源数据库",
+          "text": "源端数据库是什么？",
+          "options": ["Oracle", "MySQL", "PostgreSQL", "SQL Server", "其他"],
+          "required": true
+        },
+        {
+          "id": "target_db",
+          "category": "目标数据库",
+          "text": "目标端数据库是什么？",
+          "options": ["达梦", "OceanBase", "TiDB", "PostgreSQL", "其他"],
+          "required": true
+        },
+        {
+          "id": "scope",
+          "category": "迁移范围",
+          "text": "请确认迁移范围：是全量迁移还是部分迁移？",
+          "options": ["全量迁移", "按业务模块迁移", "按表迁移"],
+          "required": true
+        },
+        {
+          "id": "data_size",
+          "category": "数据规模",
+          "text": "请提供源库数据量估算。",
+          "options": ["< 100GB", "100GB - 1TB", "1TB - 10TB", "> 10TB", "不清楚"],
+          "required": true
+        },
+        {
+          "id": "downtime",
+          "category": "停机窗口",
+          "text": "业务允许的最大停机时间是多少？",
+          "options": ["< 1 小时", "1 - 4 小时", "4 - 24 小时", "> 24 小时", "可接受长时间停机"],
+          "required": true
+        }
+      ],
+      "solution_templates": {
+        "title": "数据库迁移技术方案",
+        "sections": [
+          {
+            "name": "一、迁移概述",
+            "template": "源端：{source_db} → 目标端：{target_db}\n迁移范围：{scope}\n数据规模：{data_size}\n停机窗口：{downtime}"
+          },
+          {
+            "name": "二、迁移方案选型",
+            "template": "{methodology_recommendation}\n\n详细步骤：\n{detailed_steps}"
+          },
+          {
+            "name": "三、风险与预案",
+            "template": "主要风险：\n{risk_assessment}\n\n回滚方案：\n{rollback_plan}"
+          }
+        ]
+      }
+    }
+  },
+  "methodology": {
+    "online_migration": {
+      "name": "在线迁移（推荐用于短停机要求）",
+      "tools": ["达梦 DMETL", "DataGuard + 达梦同步工具", "Canal + 达梦 Kafka 连接器"],
+      "steps": [
+        "1. 准备阶段：搭建源端 Oracle 和目标端达梦的双向同步通道",
+        "2. 全量初始化：使用 DMETL 或 impdp/expdp 完成全量数据迁移",
+        "3. 增量同步：配置 CDC（Change Data Capture）实时同步增量变更",
+        "4. 数据校验：在同步过程中持续校验数据一致性",
+        "5. 灰度切换：先切部分读流量到达梦，验证无误后切写流量",
+        "6. 反向同步：切换后建立反向同步通道以便回滚",
+        "7. 完全切换：稳定运行一段时间后完全停掉 Oracle"
+      ]
+    },
+    "offline_migration": {
+      "name": "离线迁移（推荐用于长停机窗口）",
+      "tools": ["达梦 DTS", "expdp/impdp", "DMETL"],
+      "steps": [
+        "1. 冻结业务：停止所有写入操作",
+        "2. 数据导出：使用 expdp 导出 Oracle 数据",
+        "3. 数据转换：通过达梦迁移工具完成数据类型映射和转换",
+        "4. 数据导入：使用 dminit/dmimp 导入达梦",
+        "5. 索引重建：重建所有索引和约束",
+        "6. 数据校验：全量数据比对，确保一致性",
+        "7. 业务切流：切换应用连接到达梦数据库"
+      ]
+    },
+    "dual_write_migration": {
+      "name": "双写迁移（推荐用于零风险要求）",
+      "tools": ["Canal + 自研双写组件", "ShardingSphere 影子库", "达梦 DTS 双向同步"],
+      "steps": [
+        "1. 部署双写层：在应用和数据库之间加入双写组件",
+        "2. 全量初始化：向达梦全量同步历史数据",
+        "3. 双写运行：Oracle 和达梦同时写入，以 Oracle 为准",
+        "4. 数据校验：持续比对双写结果一致性",
+        "5. 读流量切换：逐步将读请求切到达梦",
+        "6. 停止 Oracle 写入：验证无误后停掉 Oracle 写入",
+        "7. 完全切换：达梦成为唯一数据库"
+      ]
+    }
+  },
+  "risk_knowledge": {
+    "oracle_to_dm_common_risks": [
+      "数据类型映射风险：NUMBER→DECIMAL、VARCHAR2→VARCHAR、CLOB→CLOB 等需逐一验证",
+      "存储过程兼容性：达梦对 PL/SQL 支持有限，复杂存储过程/包需要重写",
+      "隐式转换差异：Oracle 和达梦在隐式类型转换上的行为可能不同",
+      "日期格式差异：NLS_DATE_FORMAT 不兼容可能导致日期解析错误",
+      "事务隔离级别：达梦默认隔离级别与 Oracle 可能不同",
+      "LOB 存储方式：达梦的大对象存储机制与 Oracle 有差异",
+      "SQL 方言差异：DECODE→COALESCE、ROWNUM→LIMIT 等",
+      "分区表支持：达梦对某些分区类型的支持可能受限"
+    ]
+  }
+}

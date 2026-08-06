@@ -1,0 +1,26 @@
+{
+  "name": "dba-tech-solution-grillme",
+  "displayName": "DBA 技术方案反问机",
+  "version": "1.0.0",
+  "description": "决策类辅助 GrillMe。当 DBA 提出模糊需求时，通过系统性反问识别关键信息缺口，最终输出结构化技术方案。支持数据库迁移、性能调优、高可用设计等常见 DBA 场景。",
+  "author": "MoPheus Team",
+  "entry": "main.py",
+  "language": "python",
+  "dependencies": [],
+  "configurable": true,
+  "triggers": [
+    "grillme",
+    "方案",
+    "技术方案",
+    "迁移方案",
+    "怎么做",
+    "如何做",
+    "grill"
+  ],
+  "domains": [
+    "database-migration",
+    "performance-tuning",
+    "ha-design",
+    "backup-recovery"
+  ]
+}
